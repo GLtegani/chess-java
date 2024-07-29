@@ -1,12 +1,13 @@
 package chess;
 
 import boardgame.Board;
+import boardgame.Piece;
 import boardgame.Position;
 import chess.pieces.King;
 import chess.pieces.Rook;
 
 public class ChessMatch {
-   private Board board;
+   private final Board board;
 
    public ChessMatch() {
       this.board = new Board(8, 8);
@@ -22,6 +23,37 @@ public class ChessMatch {
          }
       }
       return mat;
+   }
+
+   public ChessPiece performChessMove(ChessPosition sourcePosition, ChessPosition targetPosition) {
+      Position source = sourcePosition.toPosition();
+      Position target = targetPosition.toPosition();
+      validateSourcePosition(source);
+      validateTargetPosition(source, target);
+      Piece capturedPiece = makeMove(source, target);
+      return (ChessPiece) capturedPiece;
+   }
+
+   private Piece makeMove(Position source, Position target) {
+      Piece piece = this.board.removePiece(source);
+      Piece capturedPiece = this.board.removePiece(target);
+      this.board.placePiece(piece, target);
+      return capturedPiece;
+   }
+
+   private void validateSourcePosition(Position position) {
+      if(!this.board.thereIsAPiece(position)) {
+         throw new ChessException("There is no piece on source position");
+      }
+      if(!this.board.piece(position).isThereAnyPossibleMove()) {
+         throw new ChessException("There is no possible moves for the chosen piece");
+      }
+   }
+
+   private void validateTargetPosition(Position source, Position target) {
+      if(!this.board.piece(source).possibleMove(target)) {
+         throw new ChessException("The chosen piece can't move to target position");
+      }
    }
 
    private void placeNewPiece(char column, int row, ChessPiece piece) {
