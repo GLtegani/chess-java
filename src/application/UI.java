@@ -6,6 +6,7 @@ import chess.ChessPosition;
 import chess.Color;
 
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class UI {
@@ -51,7 +52,6 @@ public class UI {
       System.out.println();
       System.out.println("Turn: " + chessMatch.getTurn());
       System.out.println("Waiting player: " + chessMatch.getCurrentPlayer());
-
    }
 
    public void printBoard(ChessPiece[][] pieces) {
@@ -88,6 +88,14 @@ public class UI {
          System.out.print(ANSI_BLUE + piece + ANSI_RESET);
       }
       System.out.print(" ");
+
+   }
+
+   private void printCapturedPieces(List<ChessPiece> captured) {
+      List<ChessPiece> white = captured.stream().filter(x -> x.getColor() == Color.WHITE).toList();
+      List<ChessPiece> black = captured.stream().filter(x -> x.getColor() == Color.BLACK).toList();
+      System.out.println("Captured pieces:");
+      System.out.println("White: ");
 
    }
 }
