@@ -115,8 +115,27 @@ public class ChessMatch {
       }
 
       if(!type.equals("B") && !type.equals("N") && !type.equals("R") && !type.equals("Q")) {
-
+         return this.promoted;
       }
+
+      Position pos = this.promoted.getChessPosition().toPosition();
+      Piece p = this.board.removePiece(pos);
+      this.piecesOnTheBoard.remove(p);
+      ChessPiece newPiece = newPiece(type, this.promoted.getColor());
+      this.board.placePiece(newPiece, pos);
+      this.piecesOnTheBoard.add(newPiece);
+
+      return newPiece;
+
+   }
+
+   private ChessPiece newPiece(String type, Color color) {
+      return switch (type) {
+         case "B" -> new Bishop(this.board, color);
+         case "H" -> new Knight(this.board, color);
+         case "Q" -> new Queen(this.board, color);
+         default -> new Rook(this.board, color);
+      };
    }
 
    private Piece makeMove(Position source, Position target) {
