@@ -15,6 +15,7 @@ public class ChessMatch {
    private boolean check;
    private boolean checkMate;
    private ChessPiece enPassantVulnerable;
+   private ChessPiece promoted;
    private final List<Piece> piecesOnTheBoard = new ArrayList<>();
    private final List<Piece> capturedPieces = new ArrayList<>();
 
@@ -44,6 +45,10 @@ public class ChessMatch {
 
    public ChessPiece getEnPassantVulnerable() {
       return enPassantVulnerable;
+   }
+
+   public ChessPiece getPromoted() {
+      return promoted;
    }
 
    public ChessPiece[][] getPieces() {
@@ -76,6 +81,15 @@ public class ChessMatch {
 
       ChessPiece movedPiece = (ChessPiece) this.board.piece(target);
 
+//      #SPECIALMOVE PROMOTION
+
+      this.promoted = null;
+      if(movedPiece instanceof Pawn) {
+         if(movedPiece.getColor() == Color.WHITE && target.getRow() == 0 || movedPiece.getColor() == Color.BLACK && target.getRow() == 7) {
+            this.promoted = (ChessPiece) this.board.piece(target);
+            this.promoted = replacePromotedPiece("Q");
+         }
+      }
       this.check = testCheck(opponent(this.currentPlayer)) ? true : false;
 
       if(testCheckMate(opponent(this.currentPlayer))) {
@@ -93,6 +107,16 @@ public class ChessMatch {
          this.enPassantVulnerable = null;
       }
       return (ChessPiece) capturedPiece;
+   }
+
+   public ChessPiece replacePromotedPiece(String type) {
+      if(this.promoted == null) {
+         throw new IllegalStateException("There is no piece to be promoted");
+      }
+
+      if(!type.equals("B") && !type.equals("N") && !type.equals("R") && !type.equals("Q")) {
+
+      }
    }
 
    private Piece makeMove(Position source, Position target) {
